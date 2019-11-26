@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class mongodbConnection {
 
     public static void main (String[] args) {
@@ -23,11 +25,11 @@ public class mongodbConnection {
 
             try (Scanner scanner = new Scanner(new File("./VersionSWISS.tab"));) {
                 int nword = 0;
-                while (scanner.hasNextLine() && nword<2) {
+                while (scanner.hasNextLine() && nword<15) {
                     String sent = scanner.nextLine();
                     nword++;
-                    System.out.printf("%3d) %s%n", nword, sent);
-                    String data[] = sent.split("[\t]|[{]");
+                    //System.out.printf("%3d) %s%n", nword, sent);
+                    String data[] = sent.split("\t",12);
                     Document doc = new Document("entry", data[0])
                             .append("entryName", data[1])
                             .append("status", data[2])
@@ -49,7 +51,7 @@ public class mongodbConnection {
             }
 
 
-            Document myDoc = collectionSwissProtein.find().first();
+            Document myDoc = collectionSwissProtein.find(eq("entry","A4QMS7")).first();
             System.out.println(myDoc.toJson());
 
         } catch (MongoException mongoExObj){
