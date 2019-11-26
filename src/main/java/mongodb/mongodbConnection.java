@@ -50,8 +50,35 @@ public class mongodbConnection {
                 e.printStackTrace();
             }
 
+            try (Scanner scanner = new Scanner(new File("./VersionUNREVIEWED.tab"));) {
+                int nword = 0;
+                while (scanner.hasNextLine() && nword<15) {
+                    String sent = scanner.nextLine();
+                    nword++;
+                    //System.out.printf("%3d) %s%n", nword, sent);
+                    String data[] = sent.split("\t",12);
+                    Document doc = new Document("entry", data[0])
+                            .append("entryName", data[1])
+                            .append("status", data[2])
+                            .append("proteinNames", data[3])
+                            .append("geneNames", data[4])
+                            .append("organism", data[5])
+                            .append("length", data[6])
+                            .append("crossReferenceInterPro", data[7])
+                            .append("sequence", data[8])
+                            .append("geneOntologyGOs", data[9])
+                            .append("functionCC", data[10])
+                            .append("eCNumber", data[11]);
 
-            Document myDoc = collectionSwissProtein.find(eq("entry","A4QMS7")).first();
+
+                    collectionUnreviewedProtein.insertOne(doc);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            Document myDoc = collectionUnreviewedProtein.find(eq("entry","A0A1B0GW15")).first();
             System.out.println(myDoc.toJson());
 
         } catch (MongoException mongoExObj){
