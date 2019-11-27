@@ -43,6 +43,8 @@ public class mongobdQueries {
             dataListDesc.addAll(searchByChamp("geneOntologyGO",token[4],db));
         }
 
+        dataList.addAll(dataListId);
+
         if(token[1].toLowerCase().contains("and")){
             List<String> temp = new ArrayList<>();
             temp.addAll(dataList);
@@ -62,7 +64,6 @@ public class mongobdQueries {
             }
         }
 
-        dataList.addAll(dataListId);
         if(token[1].toLowerCase().contains("or")){
             for (String data:dataListName) {
                 if(!dataList.contains(data)){
