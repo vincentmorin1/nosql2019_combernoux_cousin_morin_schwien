@@ -5,13 +5,12 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import static com.mongodb.client.model.Filters.eq;
 
 public class mongodbConnection {
 
@@ -20,11 +19,14 @@ public class mongodbConnection {
     }
 
     public static void mongodbSetup(){
+
         try {
             MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
             MongoDatabase database = mongoClient.getDatabase("mydb");
             MongoCollection<Document> collectionSwissProtein = database.getCollection("swissProtein");
             MongoCollection<Document> collectionUnreviewedProtein = database.getCollection("unreviewedProtein");
+
+            database.drop();
 
             Populate("./VersionSWISS.tab", collectionSwissProtein);
             Populate("./VersionUNREVIEWED.tab", collectionUnreviewedProtein);
@@ -49,7 +51,7 @@ public class mongodbConnection {
                         .append("length", data[6])
                         .append("crossReferenceInterPro", data[7])
                         .append("sequence", data[8])
-                        .append("geneOntologyGOs", data[9])
+                        .append("geneOntologyGO", data[9])
                         .append("functionCC", data[10])
                         .append("eCNumber", data[11]);
                 collection.insertOne(doc);
