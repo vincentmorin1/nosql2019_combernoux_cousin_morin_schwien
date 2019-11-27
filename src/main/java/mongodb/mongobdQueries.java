@@ -20,7 +20,7 @@ public class mongobdQueries {
                 out) {
             System.out.println(data);
         }*/
-        search("A or C and inte", database );
+        search("A and C and inte", database );
     }
 
     public static void search(String line, MongoDatabase db){
@@ -33,39 +33,43 @@ public class mongobdQueries {
 
         //ID OR/AND NAME OR/AND DESCRIPTION
 
-        if(token[0]!=""){
+        if(token[0]!="."){
             dataListId.addAll(searchByChamp("entry",token[0],db));
         }
-        if(token[2]!=""){
+        if(token[2]!="."){
             dataListName.addAll(searchByChamp("entryName",token[2],db));
         }
-        if(token[4]!=""){
+        if(token[4]!="."){
             dataListDesc.addAll(searchByChamp("geneOntologyGO",token[4],db));
         }
 
         dataList.addAll(dataListId);
-        if(token[1].toLowerCase()=="or"){
+        if(token[1].toLowerCase().contains("or")){
             for (String data:dataListName) {
                 if(!dataList.contains(data)){
                     dataList.add(data);
                 }
             }
-        } else if(token[1].toLowerCase()=="and"){
-            for (String data:dataList) {
+        } else if(token[1].toLowerCase().contains("and")){
+            List<String> temp = new ArrayList<>();
+            temp.addAll(dataList);
+            for (String data:temp) {
                 if(!dataListName.contains(data)){
                     dataList.remove(data);
                 }
             }
         }
 
-        if(token[3].toLowerCase()=="or"){
+        if(token[3].toLowerCase().contains("or")){
             for (String data:dataListDesc) {
                 if(!dataList.contains(data)){
                     dataList.add(data);
                 }
             }
-        } else if(token[3].toLowerCase()=="and"){
-            for (String data:dataList) {
+        } else if(token[3].toLowerCase().contains("and")){
+            List<String> temp2 = new ArrayList<>();
+            temp2.addAll(dataList);
+            for (String data:temp2) {
                 if(!dataListDesc.contains(data)){
                     dataList.remove(data);
                 }
