@@ -20,7 +20,9 @@ public class mongobdQueries {
                 out) {
             System.out.println(data);
         }*/
-        search("A or C or inte", database );
+
+
+        //search("A or C or inte", database );
     }
 
     public static void search(String line, MongoDatabase db){
