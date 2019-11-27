@@ -20,7 +20,7 @@ public class mongobdQueries {
                 out) {
             System.out.println(data);
         }*/
-        search("A and C and inte", database );
+        search("A or C or inte", database );
     }
 
     public static void search(String line, MongoDatabase db){
@@ -43,14 +43,7 @@ public class mongobdQueries {
             dataListDesc.addAll(searchByChamp("geneOntologyGO",token[4],db));
         }
 
-        dataList.addAll(dataListId);
-        if(token[1].toLowerCase().contains("or")){
-            for (String data:dataListName) {
-                if(!dataList.contains(data)){
-                    dataList.add(data);
-                }
-            }
-        } else if(token[1].toLowerCase().contains("and")){
+        if(token[1].toLowerCase().contains("and")){
             List<String> temp = new ArrayList<>();
             temp.addAll(dataList);
             for (String data:temp) {
@@ -59,14 +52,7 @@ public class mongobdQueries {
                 }
             }
         }
-
-        if(token[3].toLowerCase().contains("or")){
-            for (String data:dataListDesc) {
-                if(!dataList.contains(data)){
-                    dataList.add(data);
-                }
-            }
-        } else if(token[3].toLowerCase().contains("and")){
+        if(token[3].toLowerCase().contains("and")){
             List<String> temp2 = new ArrayList<>();
             temp2.addAll(dataList);
             for (String data:temp2) {
@@ -76,6 +62,21 @@ public class mongobdQueries {
             }
         }
 
+        dataList.addAll(dataListId);
+        if(token[1].toLowerCase().contains("or")){
+            for (String data:dataListName) {
+                if(!dataList.contains(data)){
+                    dataList.add(data);
+                }
+            }
+        }
+        if(token[3].toLowerCase().contains("or")){
+            for (String data:dataListDesc) {
+                if(!dataList.contains(data)){
+                    dataList.add(data);
+                }
+            }
+        }
         for(String data: dataList){
             System.out.println(data);
         }
