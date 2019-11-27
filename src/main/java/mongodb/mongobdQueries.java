@@ -3,91 +3,48 @@ package mongodb;
 import com.mongodb.client.*;
 import org.bson.Document;
 
-import static com.mongodb.client.model.Filters.eq;
+import java.util.*;
+
+import static com.mongodb.client.model.Filters.regex;
 
 public class mongobdQueries {
 
     public static void main (String[] args) {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase database = mongoClient.getDatabase("mydb");
-        searchByID("A0A1B0GTH6", database);
-        searchByName("AGIT1_HUMAN", database);
-        searchByDescription("", database);
+        //entry
+        //entryName
+        //geneOntologyGO
+        List<String> out = searchByChamp("entry", "A", database);
+        for (String data:
+                out) {
+            System.out.println(data);
+        }
     }
 
     public static void search(){
-        
+
     }
 
-    public static void searchByID(String id, MongoDatabase database){
-        MongoCollection<Document> collectionSwissProtein = database.getCollection("swissProtein");
-        collectionSwissProtein.createIndex(new Document("entry", 1));
-        MongoCollection<Document> collectionUnreviewedProtein = database.getCollection("unreviewedProtein");
-        collectionUnreviewedProtein.createIndex(new Document("entry", 1));
-        Document myDoc;
-        MongoCursor<Document> cursor = collectionSwissProtein.find(eq("entry", id)).iterator();
+    public static List<String> searchByChamp(String champ, String chain, MongoDatabase database){
+        List<String> dataList = new ArrayList<>();
+        dataList.addAll(searchCollection(champ, chain, database, "swissProtein"));
+        dataList.addAll(searchCollection(champ, chain, database, "unreviewedProtein"));
+        return dataList;
+    }
+
+    public static List<String> searchCollection(String champ, String chain, MongoDatabase database, String collectionName){
+        List<String> data = new ArrayList<>();
+        MongoCollection<Document> collection = database.getCollection(collectionName);
+        collection.createIndex(new Document(champ, 1));
+        MongoCursor<Document> cursor = collection.find(regex(champ, "("+chain+")+", "i")).iterator();
         try {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
+                data.add(cursor.next().toJson());
             }
         } finally {
             cursor.close();
         }
-        MongoCursor<Document> cursor2 = collectionUnreviewedProtein.find(eq("entry", id)).iterator();
-        try {
-            while (cursor2.hasNext()) {
-                System.out.println(cursor2.next().toJson());
-            }
-        } finally {
-            cursor2.close();
-        }
-    }
-
-    public static void searchByName(String name, MongoDatabase database){
-        MongoCollection<Document> collectionSwissProtein = database.getCollection("swissProtein");
-        collectionSwissProtein.createIndex(new Document("entryName", 1));
-        MongoCollection<Document> collectionUnreviewedProtein = database.getCollection("unreviewedProtein");
-        collectionUnreviewedProtein.createIndex(new Document("entryName", 1));
-        Document myDoc;
-        MongoCursor<Document> cursor = collectionSwissProtein.find(eq("entryName", name)).iterator();
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
-        MongoCursor<Document> cursor2 = collectionUnreviewedProtein.find(eq("entryName", name)).iterator();
-        try {
-            while (cursor2.hasNext()) {
-                System.out.println(cursor2.next().toJson());
-            }
-        } finally {
-            cursor2.close();
-        }
-    }
-
-    public static void searchByDescription(String description, MongoDatabase database){
-        MongoCollection<Document> collectionSwissProtein = database.getCollection("swissProtein");
-        collectionSwissProtein.createIndex(new Document("geneOntologyGO", 1));
-        MongoCollection<Document> collectionUnreviewedProtein = database.getCollection("unreviewedProtein");
-        collectionUnreviewedProtein.createIndex(new Document("geneOntologyGO", 1));
-        Document myDoc;
-        MongoCursor<Document> cursor = collectionSwissProtein.find(eq("geneOntologyGO", description)).iterator();
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
-        MongoCursor<Document> cursor2 = collectionUnreviewedProtein.find(eq("geneOntologyGO", description)).iterator();
-        try {
-            while (cursor2.hasNext()) {
-                System.out.println(cursor2.next().toJson());
-            }
-        } finally {
-            cursor2.close();
-        }
+        return data;
     }
 }
