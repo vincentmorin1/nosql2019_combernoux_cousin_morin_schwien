@@ -78,7 +78,7 @@ public class mongodbConnection {
             }
 
 
-            Document myDoc = collectionUnreviewedProtein.find(eq("entry","A0A1B0GW15")).first();
+            Document myDoc = collectionUnreviewedProtein.find(eq("entry","A0A1B0GW15sge")).first();
             System.out.println(myDoc.toJson());
 
         } catch (MongoException mongoExObj){
