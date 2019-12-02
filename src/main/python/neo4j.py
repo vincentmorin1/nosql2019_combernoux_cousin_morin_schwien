@@ -7,7 +7,7 @@ def parseReference(references):
         ref.pop()  #on pop si le dernier elts est vide
     return ref
 
-graph = py2neo.Graph(user="neo4j", password="Yu6A9t6a") 
+graph = py2neo.Graph(user="neo4j", password="Yu6A9t6a")
 print("Connexion reussie")
 graph.delete_all()
 print("Donnees supprimees")

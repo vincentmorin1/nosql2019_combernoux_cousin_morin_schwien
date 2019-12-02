@@ -2,3 +2,5 @@
 VersionSWISS.tab
 VersionUNREVIEWED.tab
 /target
+nosql2019_combernoux_cousin_morin_schwien.iml
+target/classes/mongodb/mongodbConnection.class
